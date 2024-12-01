@@ -5,7 +5,7 @@ class BackendApi {
   client = axios.create({ baseURL: this.baseURL });
 
   setBearerToken(token: string) {
-    this.client.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    this.client.defaults.headers.common["Authorization"] = `${token}`;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

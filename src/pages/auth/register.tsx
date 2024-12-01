@@ -91,7 +91,8 @@ const RegisterPage = () => {
       } else {
         setError("Registration failed. Please try again.");
       }
-    } catch (error) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
       setError(
         error.response?.data?.message ||
           "An error occurred during registration. Please try again."

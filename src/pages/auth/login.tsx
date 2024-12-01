@@ -73,7 +73,7 @@ const LoginPage = () => {
             })
           );
 
-          router.push("/dashboard");
+          router.push("/dashboard/sensor-reading");
         }
       } catch (error) {
         dispatch(openErrorHandlerModal({ error }));
