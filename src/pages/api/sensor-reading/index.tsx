@@ -10,13 +10,11 @@ export default async function handler(
   backendApi.setBearerToken(access_token);
 
   if (req.method === "GET") {
-    const { limit = 10, page = 1, timestamp } = req.query;
+    const { timestamp } = req.query;
 
     try {
-      const response = await backendApi.client.get("/sensor-reading", {
+      const response = await backendApi.client.get("/sensor-reading/average", {
         params: {
-          limit,
-          page,
           timestamp,
         },
       });
