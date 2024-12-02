@@ -18,7 +18,27 @@ function ModalProvider() {
   const dispatch = useAppDispatch();
 
   return openModals.map(
-    ({ id, title, children, type, onConfirm, onCancel }, index) => (
+    (
+      {
+        id,
+        title,
+        children,
+        type,
+        onConfirm,
+        onCancel,
+      }: {
+        id: string;
+        title: string;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        children: any;
+        type: string;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        onConfirm: any;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        onCancel: any;
+      },
+      index: number
+    ) => (
       <Dialog
         key={`${id}${index}`}
         open={true}
