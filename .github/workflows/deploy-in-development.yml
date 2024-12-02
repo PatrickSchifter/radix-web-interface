@@ -1,0 +1,38 @@
+name: deploy-in-development
+
+run-name: Pulling changes and build
+on:
+  pull_request_target:
+    branches: [develop]
+    types:
+      - closed
+
+jobs:
+  build_and_deploy:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout the files
+        uses: actions/checkout@v4
+
+      - name: Clean Up Application
+        run: |
+          rm -rf .next/
+          rm -rf dist/
+
+      - name: Build application
+        run: |
+          git pull
+          npm i
+          npm run build
+
+      - name: Restart PM2
+        run: |
+          pm2 stop radix-web-interface
+          pm2 start radix-web-interface
+
+      - name: Deploy to Development Server
+        uses: easingthemes/ssh-deploy@main
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SANDBOX_SSH_KEY }}
+          REMOTE_HOST: ${{ secrets.SANDBOX_HOST_DNS }}
+          REMOTE_USER: ${{ secrets.USERNAME }}
