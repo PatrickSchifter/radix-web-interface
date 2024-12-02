@@ -26,12 +26,11 @@ ChartJS.register(
 );
 
 interface ISensorReading {
-  id: string;
+  _avg: {
+    value: number;
+  };
   equipmentId: string;
-  timestamp: string;
-  value: number;
 }
-
 const SensorReadingChart = () => {
   const [timestamp, setTimestamp] = useState<
     "24hours" | "48hours" | "1week" | "1month"
@@ -51,14 +50,12 @@ const SensorReadingChart = () => {
       const response = await axios.get("/api/sensor-reading", {
         params: {
           timestamp,
-          limit: 100000000,
-          page: 1,
         },
         headers: {
           Authorization: `Bearer ${access_token}`,
         },
       });
-      setData(response.data.data);
+      setData(response.data);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setError("Error fetching sensor data");
@@ -74,11 +71,11 @@ const SensorReadingChart = () => {
   }, [timestamp]);
 
   const chartData = {
-    labels: data.map((item) => new Date(item.timestamp).toLocaleString()), // Labels com timestamps
+    labels: data.map((item) => item.equipmentId),
     datasets: [
       {
         label: "Sensor Value",
-        data: data.map((item) => item.value),
+        data: data.map((item) => item._avg.value),
         borderColor: "rgba(75,192,192,1)",
         backgroundColor: "rgba(75,192,192,0.2)",
         fill: true,
