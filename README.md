@@ -77,4 +77,4 @@ To fetch sensor data, you need to authenticate with the platform by providing th
 
 ### 8. Accessing the API
 
-To access the backend API, visit the [Radix-Server repository](git@github.com:PatrickSchifter/radix-server.git). Follow the instructions in the README and API documentation to set up the backend server and use your API keys for interacting with the platform.
+To access the backend API, visit the [Radix-Server repository](https://github.com/PatrickSchifter/radix-server). Follow the instructions in the README and API documentation to set up the backend server and use your API keys for interacting with the platform.
