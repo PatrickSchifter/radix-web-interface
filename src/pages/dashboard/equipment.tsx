@@ -32,13 +32,11 @@ const EquipmentPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [updateEquipments, setUpdateEquipments] = useState(false);
 
-  // Função para copiar o API Key
   const handleCopy = (apiKey: string) => {
     navigator.clipboard.writeText(apiKey);
     alert("API Key copied to clipboard!");
   };
 
-  // Função para adicionar um novo equipamento
   const handleAddEquipment = async () => {
     if (!newEquipmentId.trim()) {
       setError("Equipment ID is required");
@@ -110,6 +108,7 @@ const EquipmentPage: React.FC = () => {
 
   useEffect(() => {
     fetchEquipments();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, limit, searchQuery, updateEquipments]);
 
   return (

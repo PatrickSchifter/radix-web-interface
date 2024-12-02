@@ -4,51 +4,44 @@ import storage from "redux-persist/lib/storage";
 import authenticationReducer from "./reducers/authenticationSlice";
 import modalReducer from "./reducers/modalSlice";
 
-// Configuração do Redux Persist
 const persistConfig = {
   key: "root",
   storage,
-  blacklist: ["modal"], // Não persiste o estado do modal
+  blacklist: ["modal", "snackbar", "notifications"],
 };
 
-// Combina os reducers
 const combinedReducers = combineReducers({
   authentication: authenticationReducer,
   modal: modalReducer,
 });
 
-// Cria o persistedReducer
 const persistedReducer = persistReducer(persistConfig, combinedReducers);
 
-// Função para configurar a store
 const makeConfiguredStore = () =>
   configureStore({
     reducer: persistedReducer,
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({
-        serializableCheck: false, // Desativa a verificação de serialização para Redux Persist
+        serializableCheck: false,
       }),
   });
 
-// Tipagem do Redux Persist (inclusão do __persistor)
-export interface AppStore extends ReturnType<typeof makeConfiguredStore> {
-  __persistor: ReturnType<typeof persistStore>; // Tipando a propriedade __persistor
-}
-
-// Função para criar a store dependendo se está no servidor ou cliente
 export const makeStore = () => {
   const isServer = typeof window === "undefined";
 
-  const store = makeConfiguredStore();
-
-  // No cliente, inicializa o persistor
-  if (!isServer) {
-    (store as AppStore).__persistor = persistStore(store); // Tipo explícito para a store
+  if (isServer) {
+    return makeConfiguredStore();
+  } else {
+    const persistedReducer = persistReducer(persistConfig, combinedReducers);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const store: any = configureStore({
+      reducer: persistedReducer,
+    });
+    store.__persistor = persistStore(store);
+    return store;
   }
-
-  return store;
 };
 
-// Tipos para facilitar o uso da store no código
+export type AppStore = ReturnType<typeof makeStore>;
 export type RootState = ReturnType<AppStore["getState"]>;
 export type AppDispatch = AppStore["dispatch"];
