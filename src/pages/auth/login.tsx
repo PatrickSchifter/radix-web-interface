@@ -55,31 +55,61 @@ const LoginPage = () => {
     setIsLoading(true);
 
     try {
-      //for some reason with one trycatch there-is a bug and I dont know why
-      try {
-        const response = await axios.post("/api/auth/login", {
-          email,
-          password,
-        });
+      const response = await axios.post("/api/auth/login", {
+        email,
+        password,
+      });
 
-        if (response.status === 200) {
-          const data = response.data;
+      if (response.status === 200) {
+        const data = response.data;
 
-          dispatch(
-            setAccessToken({
-              user_id: data.user_id,
-              access_token: data.access_token,
-              expires_at: new Date(data.expires_at).getTime(),
-            })
-          );
+        dispatch(
+          setAccessToken({
+            user_id: data.user_id,
+            access_token: data.access_token,
+            expires_at: new Date(data.expires_at).getTime(),
+          })
+        );
 
-          router.push("/dashboard/sensor-reading");
-        }
-      } catch (error) {
-        dispatch(openErrorHandlerModal({ error }));
+        router.push("/dashboard/sensor-reading");
+      } else {
+        dispatch(
+          openErrorHandlerModal({
+            error: {
+              message: `Unexpected response: ${response.status} - ${response.statusText}`,
+            },
+          })
+        );
       }
-    } catch (error) {
-      console.error("Erro no login:", error);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.log(error);
+      if (error.response) {
+        dispatch(
+          openErrorHandlerModal({
+            error: {
+              message: `
+                ${error.response.data.message || "Unknown error"}`,
+            },
+          })
+        );
+      } else if (error.request) {
+        dispatch(
+          openErrorHandlerModal({
+            error: {
+              message: "No response from server. Please try again later.",
+            },
+          })
+        );
+      } else {
+        dispatch(
+          openErrorHandlerModal({
+            error: {
+              message: `Unexpected error: ${error.message}`,
+            },
+          })
+        );
+      }
     } finally {
       setIsLoading(false);
     }
